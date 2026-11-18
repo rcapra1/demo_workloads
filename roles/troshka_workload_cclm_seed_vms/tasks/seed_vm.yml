@@ -6,7 +6,27 @@
   vars:
     cclm_cluster_name: "{{ cclm_source_cluster }}"
 
-- name: Create demo VirtualMachine {{ cclm_seed_vm_name }}
+- name: Build DataVolume source for {{ cclm_seed_vm.namespace }}/{{ cclm_seed_vm.name }}
+  ansible.builtin.set_fact:
+    cclm_seed_dv_source: >-
+      {{
+        {'source': {'blank': {}}}
+        if (cclm_seed_vm.source | default('')) == 'blank'
+        else {
+          'sourceRef': {
+            'kind': 'DataSource',
+            'name': cclm_seed_vm.datasource_name,
+            'namespace': cclm_seed_vm.datasource_namespace | default('openshift-virtualization-os-images')
+          }
+        }
+      }}
+    cclm_seed_dv_storage:
+      storageClassName: "{{ cclm_seed_vm.storage_class | default(cclm_odf_storage_class) }}"
+      resources:
+        requests:
+          storage: "{{ cclm_seed_vm.disk_size }}"
+
+- name: Create VirtualMachine {{ cclm_seed_vm.namespace }}/{{ cclm_seed_vm.name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
@@ -16,35 +36,27 @@
       apiVersion: kubevirt.io/v1
       kind: VirtualMachine
       metadata:
-        name: "{{ cclm_seed_vm_name }}"
-        namespace: "{{ cclm_vm_namespaces[cclm_source_cluster] }}"
+        name: "{{ cclm_seed_vm.name }}"
+        namespace: "{{ cclm_seed_vm.namespace }}"
         labels:
-          app: cclm-demo
+          app: cclm-lab
+          cclm-vm: "{{ cclm_seed_vm.name }}"
       spec:
-        runStrategy: "{{ 'RerunOnFailure' if (cclm_seed_vm_run | bool) else 'Halted' }}"
+        runStrategy: "{{ 'RerunOnFailure' if (cclm_seed_vm.run | default(true) | bool) else 'Halted' }}"
         dataVolumeTemplates:
           - metadata:
-              name: "{{ cclm_seed_vm_name }}"
-            spec:
-              sourceRef:
-                kind: DataSource
-                name: "{{ cclm_seed_vm_datasource_name }}"
-                namespace: "{{ cclm_seed_vm_datasource_namespace }}"
-              storage:
-                storageClassName: "{{ cclm_odf_storage_class }}"
-                resources:
-                  requests:
-                    storage: "{{ cclm_seed_vm_disk_size }}"
+              name: "{{ cclm_seed_vm.name }}"
+            spec: "{{ cclm_seed_dv_source | combine({'storage': cclm_seed_dv_storage}) }}"
         template:
           metadata:
             labels:
-              kubevirt.io/vm: "{{ cclm_seed_vm_name }}"
+              kubevirt.io/vm: "{{ cclm_seed_vm.name }}"
           spec:
             domain:
               cpu:
-                cores: "{{ cclm_seed_vm_cpu_cores }}"
+                cores: "{{ cclm_seed_vm.cpu_cores }}"
               memory:
-                guest: "{{ cclm_seed_vm_memory }}"
+                guest: "{{ cclm_seed_vm.memory }}"
               devices:
                 disks:
                   - name: rootdisk
@@ -59,4 +71,4 @@
             volumes:
               - name: rootdisk
                 dataVolume:
-                  name: "{{ cclm_seed_vm_name }}"
+                  name: "{{ cclm_seed_vm.name }}"

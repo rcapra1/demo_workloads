@@ -1,11 +1,42 @@
 ---
-- name: Create workload namespaces on each cluster
+- name: Build unique source VM namespaces
+  ansible.builtin.set_fact:
+    cclm_seed_vm_namespaces: "{{ cclm_seed_vms | map(attribute='namespace') | list | unique }}"
+
+- name: Create destination-cluster namespace on each target cluster
   ansible.builtin.include_tasks: namespaces.yml
   loop: "{{ cclm_target_clusters }}"
   loop_control:
     loop_var: cclm_cluster_name
     label: "{{ cclm_cluster_name }}"
 
-- name: Seed demo VM on source cluster
+- name: Set source cluster API context for lab VM namespaces
+  ansible.builtin.include_role:
+    name: troshka_workload_cclm_common
+    tasks_from: set_cluster_context.yml
+  vars:
+    cclm_cluster_name: "{{ cclm_source_cluster }}"
+
+- name: Ensure source lab VM namespaces
+  kubernetes.core.k8s:
+    host: "{{ cclm_k8s_host }}"
+    api_key: "{{ cclm_k8s_token }}"
+    validate_certs: "{{ cclm_k8s_validate_certs }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ item }}"
+        labels:
+          cclm-role: source-lab-vm
+  loop: "{{ cclm_seed_vm_namespaces }}"
+  when: cclm_seed_vm_run | bool
+
+- name: Seed lab VirtualMachines on source cluster
   ansible.builtin.include_tasks: seed_vm.yml
+  loop: "{{ cclm_seed_vms }}"
+  loop_control:
+    loop_var: cclm_seed_vm
+    label: "{{ cclm_seed_vm.namespace }}/{{ cclm_seed_vm.name }}"
   when: cclm_seed_vm_run | bool

@@ -1,10 +1,13 @@
 = troshka_workload_cclm_seed_vms
 
-Creates `source-cluster` / `destination-cluster` namespaces and optionally imports a
-demo VM into the source namespace for MTV live-migration exercises.
+Creates the destination workload namespace on each target cluster, then creates
+every lab VM namespace and VirtualMachine listed in `cclm_seed_vms` on the
+**source** cluster (affinity, dynamic-schedule, fencing, hot-plug,
+live-migration, over-commit, source-cluster, vms-aap-day2, webapp-vms).
 
-The seed VM is created from the cluster DataSource
-`openshift-virtualization-os-images/rhel9` onto
-`ocs-external-storagecluster-ceph-rbd-virtualization` (30Gi by default).
+VM disks use DataSources under `openshift-virtualization-os-images` (or blank
+volumes for the Windows placeholders). Storage classes match the live source
+cluster (`ocs-external-storagecluster-ceph-rbd` or
+`…-ceph-rbd-virtualization`).
 
-Set `cclm_seed_vm_run: false` to skip VM creation (student imports via MTV UI).
+Set `cclm_seed_vm_run: false` to skip VM creation.
