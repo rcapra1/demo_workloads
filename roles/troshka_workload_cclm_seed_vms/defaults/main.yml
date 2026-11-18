@@ -5,9 +5,24 @@ cclm_seed_vm_run: true
 # Default storage class when a VM entry omits storage_class.
 cclm_odf_storage_class: ocs-external-storagecluster-ceph-rbd
 
+# Lab namespaces created on every cluster in cclm_target_clusters (source +
+# destination) so MTV can migrate into matching namespaces on destination.
+# Keep in sync with namespaces used by cclm_seed_vms.
+cclm_seed_vm_namespaces:
+  - affinity
+  - dynamic-schedule
+  - fencing
+  - hot-plug
+  - live-migration
+  - over-commit
+  - source-cluster
+  - vms-aap-day2
+  - webapp-vms
+
 # All VMs mirrored from the source cluster (namespaces + specs).
 # image kinds: datasource (sourceRef), blank. Snapshot hashes from the live
 # cluster are normalized to stable DataSources for fresh lab installs.
+# VMs are created on the source cluster only.
 cclm_seed_vms:
   - namespace: affinity
     name: node-affinity-vm
