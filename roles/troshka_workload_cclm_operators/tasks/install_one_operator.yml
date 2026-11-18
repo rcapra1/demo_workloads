@@ -50,7 +50,7 @@
         installPlanApproval: Automatic
         name: "{{ cclm_operator.package }}"
         source: "{{ cclm_operator.source | default(cclm_operator_source) }}"
-        sourceNamespace: "{{ cclm_operator_source_namespace }}"
+        sourceNamespace: "{{ cclm_operator.sourceNamespace | default(cclm_operator_source_namespace) }}"
 
 - name: Wait for operator CSV — {{ cclm_cluster_name ~ '/' ~ cclm_operator.package }}
   kubernetes.core.k8s_info:

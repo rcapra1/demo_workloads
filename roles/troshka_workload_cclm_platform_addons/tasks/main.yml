@@ -1,0 +1,19 @@
+---
+- name: Set source cluster API context for platform add-ons
+  ansible.builtin.include_role:
+    name: troshka_workload_cclm_common
+    tasks_from: set_cluster_context.yml
+  vars:
+    cclm_cluster_name: "{{ cclm_platform_addons_cluster }}"
+
+- name: Configure Advanced Cluster Management MultiClusterHub
+  ansible.builtin.include_tasks: configure_acm.yml
+
+- name: Configure Advanced Cluster Security Central and SecuredCluster
+  ansible.builtin.include_tasks: configure_acs.yml
+
+- name: Configure KubeDescheduler
+  ansible.builtin.include_tasks: configure_descheduler.yml
+
+- name: Configure Ansible Automation Platform
+  ansible.builtin.include_tasks: configure_aap.yml

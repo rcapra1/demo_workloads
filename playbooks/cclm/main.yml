@@ -6,6 +6,7 @@
   gather_facts: false
   roles:
     - role: troshka_workload_cclm_operators
+    - role: troshka_workload_cclm_platform_addons
     - role: troshka_workload_cclm_network
     - role: troshka_workload_cclm_hco
     - role: troshka_workload_cclm_forklift

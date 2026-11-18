@@ -6,10 +6,11 @@ destination SNO on KubeVirt).
 ## Roles (order matters)
 
 1. `troshka_workload_cclm_operators` — OLM subscriptions
-2. `troshka_workload_cclm_hco` — decentralized live migration
+2. `troshka_workload_cclm_platform_addons` — ACM MCH, RHACS, KubeDescheduler, AAP CRs (source)
 3. `troshka_workload_cclm_network` — migration NAD, NNCPs, MetalLB, external ODF
-4. `troshka_workload_cclm_forklift` — Submariner + MTV maps
-5. `troshka_workload_cclm_seed_vms` — namespaces + optional demo VM
+4. `troshka_workload_cclm_hco` — decentralized live migration
+5. `troshka_workload_cclm_forklift` — Submariner + MTV maps
+6. `troshka_workload_cclm_seed_vms` — lab namespaces + VMs
 
 ## Troshka ad-hoc run (single role)
 
@@ -21,7 +22,7 @@ Pin the feature branch so the runner pod clones this work:
   "role_fqcn": "rhpds.demo_workloads.troshka_workload_cclm_operators",
   "requirements_content": {
     "collections": [{
-      "name": "https://github.com/rhpds/demo_workloads.git",
+      "name": "[https://github.com/rhpds/demo_workloads.git)",
       "type": "git",
       "version": "feat/cclm-workloads"
     }]
