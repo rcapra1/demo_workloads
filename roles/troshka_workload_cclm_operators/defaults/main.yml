@@ -1,5 +1,5 @@
 ---
-# Operator channels for nested CCLM lab.
+# Operator channels for nested CCLM lab — mirrored from source cluster.
 # Default source is the cluster's redhat-operators (matches the OCP major).
 # Packages absent from OCP 5.x early indexes pin source to the supplemental
 # v4.22 CatalogSource created by ensure_supplemental_catalog.yml.
@@ -15,33 +15,55 @@ cclm_supplemental_catalog:
 cclm_supplemental_catalog_ready_retries: 30
 cclm_supplemental_catalog_ready_delay: 10
 
+# Full Subscription inventory from source (package/channel/source/OG/targets).
+# Empty target_namespaces → AllNamespaces OperatorGroup (spec {}).
 cclm_operators:
-  - package: kubevirt-hyperconverged
-    channel: stable
-    namespace: openshift-cnv
-    operatorgroup: cnv-operators
-    target_namespaces:
-      - openshift-cnv
-  - package: mtv-operator
-    channel: release-v2.12
-    namespace: openshift-mtv
-    operatorgroup: mtv-operators
+  - package: advanced-cluster-management
+    channel: release-2.17
+    namespace: open-cluster-management
+    operatorgroup: open-cluster-management-r6cnr
     source: redhat-operators-v4-22
     target_namespaces:
-      - openshift-mtv
-  - package: odf-operator
+      - open-cluster-management
+  - package: ansible-automation-platform-operator
+    channel: stable-2.7
+    namespace: aap
+    operatorgroup: aap-kqv46
+    source: redhat-operators
+    target_namespaces:
+      - aap
+  - package: cephcsi-operator
     channel: stable-4.22
     namespace: openshift-storage
     operatorgroup: odf-operators
+    source: redhat-operators
     target_namespaces:
       - openshift-storage
-  - package: submariner
-    channel: stable-0.24
-    namespace: submariner-operator
-    operatorgroup: submariner-operators
+  - package: cluster-kube-descheduler-operator
+    channel: stable
+    namespace: openshift-kube-descheduler-operator
+    operatorgroup: openshift-kube-descheduler-operator-kh5t6
     source: redhat-operators-v4-22
     target_namespaces:
-      - submariner-operator
+      - openshift-kube-descheduler-operator
+  - package: cluster-observability-operator
+    channel: stable
+    namespace: openshift-cluster-observability-operator
+    operatorgroup: openshift-cluster-observability-operator-dr9bd
+    source: redhat-operators-v4-22
+    target_namespaces: []
+  - package: compliance-operator
+    channel: stable
+    namespace: openshift-compliance
+    operatorgroup: openshift-compliance-9tpvd
+    source: redhat-operators-v4-22
+    target_namespaces: []
+  - package: devworkspace-operator
+    channel: fast
+    namespace: openshift-operators
+    operatorgroup: global-operators
+    source: redhat-operators-v4-22
+    target_namespaces: []
   - package: kubernetes-nmstate-operator
     channel: stable
     namespace: openshift-nmstate
@@ -49,49 +71,159 @@ cclm_operators:
     source: redhat-operators-v4-22
     target_namespaces:
       - openshift-nmstate
-  - package: openshift-cert-manager-operator
-    channel: stable-v1
-    namespace: openshift-cert-manager-operator
-    operatorgroup: cert-manager-operators
+  - package: kubevirt-hyperconverged
+    channel: stable
+    namespace: openshift-cnv
+    operatorgroup: cnv-operators
+    source: redhat-operators
     target_namespaces:
-      - openshift-cert-manager-operator
-  # MetalLB CSV only supports AllNamespaces — omit target_namespaces (empty spec).
+      - openshift-cnv
+  - package: loki-operator
+    channel: stable-6.6
+    namespace: openshift-operators-redhat
+    operatorgroup: openshift-operators-redhat-rwll4
+    source: redhat-operators-v4-22
+    target_namespaces: []
+  - package: mcg-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
   - package: metallb-operator
     channel: stable
     namespace: metallb-system
     operatorgroup: metallb-operators
     source: redhat-operators-v4-22
     target_namespaces: []
-  # AllNamespaces operators (empty target_namespaces → OperatorGroup spec {}).
-  - package: compliance-operator
+  - package: mtv-operator
+    channel: release-v2.12
+    namespace: openshift-mtv
+    operatorgroup: mtv-operators
+    source: redhat-operators-v4-22
+    target_namespaces:
+      - openshift-mtv
+  - package: multicluster-engine
+    channel: stable-2.17
+    namespace: multicluster-engine
+    operatorgroup: default
+    source: redhat-operators-v4-22
+    target_namespaces:
+      - multicluster-engine
+  - package: netobserv-operator
     channel: stable
-    namespace: openshift-compliance
-    operatorgroup: openshift-compliance-9tpvd
+    namespace: openshift-netobserv-operator
+    operatorgroup: openshift-netobserv-operator-42xfv
+    source: redhat-operators-v4-22
     target_namespaces: []
   - package: node-healthcheck-operator
     channel: stable
     namespace: openshift-workload-availability
     operatorgroup: openshift-workload-availability-qtvtp
+    source: redhat-operators-v4-22
     target_namespaces: []
-  - package: self-node-remediation
-    channel: stable
-    namespace: openshift-workload-availability
-    operatorgroup: openshift-workload-availability-qtvtp
-    target_namespaces: []
+  - package: ocs-client-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: ocs-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: ocs-tls-profiles
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: odf-csi-addons-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: odf-dependencies
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: odf-external-snapshotter-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: odf-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: odf-prometheus-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: openshift-cert-manager-operator
+    channel: stable-v1
+    namespace: openshift-cert-manager-operator
+    operatorgroup: cert-manager-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-cert-manager-operator
+  - package: recipe
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
   - package: rhacs-operator
     channel: stable
     namespace: rhacs-operator
     operatorgroup: rhacs-operator-mcscv
+    source: redhat-operators
     target_namespaces: []
+  - package: rook-ceph-operator
+    channel: stable-4.22
+    namespace: openshift-storage
+    operatorgroup: odf-operators
+    source: redhat-operators
+    target_namespaces:
+      - openshift-storage
+  - package: self-node-remediation
+    channel: stable
+    namespace: openshift-workload-availability
+    operatorgroup: openshift-workload-availability-qtvtp
+    source: redhat-operators-v4-22
+    target_namespaces: []
+  - package: submariner
+    channel: stable-0.24
+    namespace: submariner-operator
+    operatorgroup: submariner-operators
+    source: redhat-operators-v4-22
+    target_namespaces:
+      - submariner-operator
   - package: web-terminal
     channel: fast
     namespace: openshift-operators
     operatorgroup: global-operators
-    target_namespaces: []
-  - package: devworkspace-operator
-    channel: fast
-    namespace: openshift-operators
-    operatorgroup: global-operators
+    source: redhat-operators-v4-22
     target_namespaces: []
 
 cclm_operator_csv_wait_retries: 90
