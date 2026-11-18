@@ -62,6 +62,37 @@ cclm_operators:
     operatorgroup: metallb-operators
     source: redhat-operators-v4-22
     target_namespaces: []
+  # AllNamespaces operators (empty target_namespaces → OperatorGroup spec {}).
+  - package: compliance-operator
+    channel: stable
+    namespace: openshift-compliance
+    operatorgroup: openshift-compliance-9tpvd
+    target_namespaces: []
+  - package: node-healthcheck-operator
+    channel: stable
+    namespace: openshift-workload-availability
+    operatorgroup: openshift-workload-availability-qtvtp
+    target_namespaces: []
+  - package: self-node-remediation
+    channel: stable
+    namespace: openshift-workload-availability
+    operatorgroup: openshift-workload-availability-qtvtp
+    target_namespaces: []
+  - package: rhacs-operator
+    channel: stable
+    namespace: rhacs-operator
+    operatorgroup: rhacs-operator-mcscv
+    target_namespaces: []
+  - package: web-terminal
+    channel: fast
+    namespace: openshift-operators
+    operatorgroup: global-operators
+    target_namespaces: []
+  - package: devworkspace-operator
+    channel: fast
+    namespace: openshift-operators
+    operatorgroup: global-operators
+    target_namespaces: []
 
 cclm_operator_csv_wait_retries: 90
 cclm_operator_csv_wait_delay: 20

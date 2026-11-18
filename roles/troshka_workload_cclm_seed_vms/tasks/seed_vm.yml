@@ -6,7 +6,6 @@
   vars:
     cclm_cluster_name: "{{ cclm_source_cluster }}"
 
-# Public containerDisk — avoids registry.redhat.io pull-secret requirements.
 - name: Create demo VirtualMachine {{ cclm_seed_vm_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
@@ -22,7 +21,20 @@
         labels:
           app: cclm-demo
       spec:
-        running: "{{ cclm_seed_vm_run | bool }}"
+        runStrategy: "{{ 'RerunOnFailure' if (cclm_seed_vm_run | bool) else 'Halted' }}"
+        dataVolumeTemplates:
+          - metadata:
+              name: "{{ cclm_seed_vm_name }}"
+            spec:
+              sourceRef:
+                kind: DataSource
+                name: "{{ cclm_seed_vm_datasource_name }}"
+                namespace: "{{ cclm_seed_vm_datasource_namespace }}"
+              storage:
+                storageClassName: "{{ cclm_odf_storage_class }}"
+                resources:
+                  requests:
+                    storage: "{{ cclm_seed_vm_disk_size }}"
         template:
           metadata:
             labels:
@@ -31,9 +43,8 @@
             domain:
               cpu:
                 cores: "{{ cclm_seed_vm_cpu_cores }}"
-              resources:
-                requests:
-                  memory: "{{ cclm_seed_vm_memory }}"
+              memory:
+                guest: "{{ cclm_seed_vm_memory }}"
               devices:
                 disks:
                   - name: rootdisk
@@ -47,5 +58,5 @@
                 pod: {}
             volumes:
               - name: rootdisk
-                containerDisk:
-                  image: "{{ cclm_seed_vm_image }}"
+                dataVolume:
+                  name: "{{ cclm_seed_vm_name }}"

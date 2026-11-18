@@ -1,7 +1,8 @@
 = troshka_workload_cclm_operators
 
-Installs CNV, MTV, ODF, Submariner, nmstate, cert-manager, and MetalLB operators on
-each cluster in `cclm_target_clusters` via OLM subscriptions.
+Installs CNV, MTV, ODF, Submariner, nmstate, cert-manager, MetalLB, Compliance,
+Node Health Check, Self Node Remediation, RHACS, Web Terminal, and DevWorkspace
+operators on each cluster in `cclm_target_clusters` via OLM subscriptions.
 
 Expects the openshift-workloads `clusters` dict (`api_url` + `api_token` per cluster key).
 For Troshka ad-hoc runs, pin `feat/cclm-workloads` in `requirements_content` and target
