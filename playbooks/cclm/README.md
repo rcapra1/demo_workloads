@@ -22,7 +22,7 @@ Pin the feature branch so the runner pod clones this work:
   "role_fqcn": "rhpds.demo_workloads.troshka_workload_cclm_operators",
   "requirements_content": {
     "collections": [{
-      "name": "https://github.com/rcapra1/demo_workloads.git",
+      "name": "[https://github.com/rhpds/demo_workloads.git)",
       "type": "git",
       "version": "feat/cclm-workloads"
     }]
