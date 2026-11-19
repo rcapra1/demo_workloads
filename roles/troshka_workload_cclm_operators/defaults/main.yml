@@ -32,13 +32,9 @@ cclm_operators:
     source: redhat-operators
     target_namespaces:
       - aap
-  - package: cephcsi-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
+  # ODF dependents (cephcsi, mcg, ocs, csi-addons, recipe, rook, …) are
+  # installed by the odf-operator Subscription — do not list them here or OLM
+  # creates duplicate Subs and hits ConstraintsNotSatisfiable.
   - package: cluster-kube-descheduler-operator
     channel: stable
     namespace: openshift-kube-descheduler-operator
@@ -84,13 +80,6 @@ cclm_operators:
     operatorgroup: openshift-operators-redhat-rwll4
     source: redhat-operators-v4-22
     target_namespaces: []
-  - package: mcg-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
   - package: metallb-operator
     channel: stable
     namespace: metallb-system
@@ -123,56 +112,7 @@ cclm_operators:
     operatorgroup: openshift-workload-availability-qtvtp
     source: redhat-operators-v4-22
     target_namespaces: []
-  - package: ocs-client-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: ocs-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: ocs-tls-profiles
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: odf-csi-addons-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: odf-dependencies
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: odf-external-snapshotter-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
   - package: odf-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
-  - package: odf-prometheus-operator
     channel: stable-4.22
     namespace: openshift-storage
     operatorgroup: odf-operators
@@ -186,26 +126,12 @@ cclm_operators:
     source: redhat-operators
     target_namespaces:
       - openshift-cert-manager-operator
-  - package: recipe
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
   - package: rhacs-operator
     channel: stable
     namespace: rhacs-operator
     operatorgroup: rhacs-operator-mcscv
     source: redhat-operators
     target_namespaces: []
-  - package: rook-ceph-operator
-    channel: stable-4.22
-    namespace: openshift-storage
-    operatorgroup: odf-operators
-    source: redhat-operators
-    target_namespaces:
-      - openshift-storage
   - package: self-node-remediation
     channel: stable
     namespace: openshift-workload-availability
