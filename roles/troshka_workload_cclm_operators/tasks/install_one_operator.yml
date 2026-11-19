@@ -52,24 +52,39 @@
         source: "{{ cclm_operator.source | default(cclm_operator_source) }}"
         sourceNamespace: "{{ cclm_operator.sourceNamespace | default(cclm_operator_source_namespace) }}"
 
-- name: Wait for operator CSV — {{ cclm_cluster_name ~ '/' ~ cclm_operator.package }}
+# Do not wait via operators.coreos.com/<package>.<namespace> labels.
+# Kubernetes label name-parts are capped at 63 bytes; OLM truncates long
+# keys (e.g. cluster-kube-descheduler-operator.openshift-kube-descheduler-op),
+# so an untruncated selector is invalid and the wait never succeeds.
+- name: Wait for Subscription installedCSV — {{ cclm_cluster_name ~ '/' ~ cclm_operator.package }}
+  kubernetes.core.k8s_info:
+    host: "{{ cclm_k8s_host }}"
+    api_key: "{{ cclm_k8s_token }}"
+    validate_certs: "{{ cclm_k8s_validate_certs }}"
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    name: "{{ cclm_operator.package }}"
+    namespace: "{{ cclm_operator.namespace }}"
+  register: cclm_operator_sub
+  retries: "{{ cclm_operator_csv_wait_retries }}"
+  delay: "{{ cclm_operator_csv_wait_delay }}"
+  until:
+    - cclm_operator_sub.resources | default([]) | length > 0
+    - cclm_operator_sub.resources[0].status.installedCSV | default('') | length > 0
+    - cclm_operator_sub.resources[0].status.state | default('') == 'AtLatestKnown'
+
+- name: Wait for operator CSV Succeeded — {{ cclm_cluster_name ~ '/' ~ cclm_operator.package }}
   kubernetes.core.k8s_info:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
     validate_certs: "{{ cclm_k8s_validate_certs }}"
     api_version: operators.coreos.com/v1alpha1
     kind: ClusterServiceVersion
+    name: "{{ cclm_operator_sub.resources[0].status.installedCSV }}"
     namespace: "{{ cclm_operator.namespace }}"
-    label_selectors:
-      - "operators.coreos.com/{{ cclm_operator.package }}.{{ cclm_operator.namespace }}"
   register: cclm_operator_csv
   retries: "{{ cclm_operator_csv_wait_retries }}"
   delay: "{{ cclm_operator_csv_wait_delay }}"
-  until: >-
-    {{
-      (cclm_operator_csv.resources | default([]) | length > 0)
-      and (
-        (cclm_operator_csv.resources[0].status.phase | default(''))
-        == 'Succeeded'
-      )
-    }}
+  until:
+    - cclm_operator_csv.resources | default([]) | length > 0
+    - cclm_operator_csv.resources[0].status.phase | default('') == 'Succeeded'
