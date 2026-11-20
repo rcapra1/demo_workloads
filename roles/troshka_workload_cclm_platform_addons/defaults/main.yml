@@ -1,0 +1,88 @@
+---
+# Apply platform add-on CRs on the source cluster (nested destination is SNO).
+cclm_platform_addons_cluster: "{{ cclm_source_cluster }}"
+
+# --- Advanced Cluster Management ---
+cclm_mch_name: multiclusterhub
+cclm_mch_namespace: open-cluster-management
+cclm_mch_availability_config: High
+cclm_mch_local_cluster_name: local-cluster
+# Component overrides mirrored from source MultiClusterHub.
+cclm_mch_components:
+  - name: app-lifecycle
+    enabled: true
+  - name: cluster-lifecycle
+    enabled: true
+  - name: console
+    enabled: true
+  - name: grc
+    enabled: true
+  - name: insights
+    enabled: true
+  - name: multicluster-engine
+    enabled: true
+  - name: multicluster-observability
+    enabled: true
+  - name: search
+    enabled: true
+  - name: submariner-addon
+    enabled: true
+  - name: volsync
+    enabled: true
+  - name: cluster-backup
+    enabled: false
+  - name: fine-grained-rbac
+    enabled: false
+  - name: siteconfig
+    enabled: false
+  - name: cnv-mtv-integrations
+    enabled: false
+
+cclm_mch_ready_retries: 90
+cclm_mch_ready_delay: 20
+
+# --- Advanced Cluster Security (RHACS) ---
+cclm_acs_namespace: stackrox
+cclm_acs_central_name: stackrox-central-services
+cclm_acs_secured_cluster_name: stackrox-secured-cluster-services
+cclm_acs_cluster_name: beyond-source
+cclm_acs_central_endpoint: central.stackrox.svc:443
+# Prefer lab external RBD; override if the cluster uses in-tree ODF.
+cclm_acs_storage_class: "{{ cclm_odf_storage_class }}"
+cclm_acs_central_db_size: 100Gi
+cclm_acs_scanner_v4_db_size: 50Gi
+
+# --- Kube Descheduler ---
+cclm_descheduler_name: cluster
+cclm_descheduler_namespace: openshift-kube-descheduler-operator
+cclm_descheduler_interval_seconds: 60
+cclm_descheduler_mode: Automatic
+cclm_descheduler_profiles:
+  - KubeVirtRelieveAndMigrate
+cclm_descheduler_eviction_limits:
+  node: 2
+  total: 5
+cclm_descheduler_profile_customizations:
+  devActualUtilizationProfile: PrometheusCPUMemoryCombinedProfile
+  devDeviationThresholds: AsymmetricMedium
+  devEnableEvictionsInBackground: true
+  devEnableSoftTainter: true
+  namespaces: {}
+
+# --- Ansible Automation Platform ---
+cclm_aap_namespace: aap
+cclm_aap_name: aap
+cclm_aap_spec:
+  controller:
+    disabled: false
+  eda:
+    disabled: false
+  hub:
+    disabled: true
+  lightspeed:
+    disabled: true
+  gateway_tls_enabled: false
+  image_pull_policy: IfNotPresent
+  no_log: true
+  redis_mode: standalone
+  route_tls_termination_mechanism: Edge
