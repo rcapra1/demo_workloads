@@ -1,5 +1,10 @@
 ---
-- name: Ensure KubeDescheduler {{ cclm_descheduler_namespace }}/{{ cclm_descheduler_name }}
+- name: Set cluster API context for descheduler on {{ cclm_cluster_name }}
+  ansible.builtin.include_role:
+    name: troshka_workload_cclm_common
+    tasks_from: set_cluster_context.yml
+
+- name: Ensure KubeDescheduler {{ cclm_descheduler_namespace }}/{{ cclm_descheduler_name }} on {{ cclm_cluster_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
