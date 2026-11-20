@@ -23,7 +23,10 @@
         feature_validation: "true"
         feature_volume_populator: "true"
 
-- name: Wait for ForkliftController on {{ cclm_cluster_name }}
+# MTV operator reconciliation can take several minutes (image pulls + ansible
+# playbook). A non-empty status alone is not enough: Running appears immediately
+# while Successful lags ~2–3m; treat Successful=True as ready.
+- name: Wait for ForkliftController Successful on {{ cclm_cluster_name }}
   kubernetes.core.k8s_info:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
@@ -35,7 +38,32 @@
   register: cclm_forklift_controller
   retries: "{{ cclm_forklift_ready_retries }}"
   delay: "{{ cclm_forklift_ready_delay }}"
-  until:
-    - cclm_forklift_controller.resources is defined
-    - cclm_forklift_controller.resources | length > 0
-    - cclm_forklift_controller.resources[0].status | default({}) | length > 0
+  until: >-
+    cclm_forklift_controller.resources | default([]) | length > 0
+    and (
+      cclm_forklift_controller.resources[0].status.conditions
+      | default([])
+      | selectattr('type', 'equalto', 'Successful')
+      | selectattr('status', 'equalto', 'True')
+      | list
+      | length > 0
+    )
+
+- name: Wait for forklift-controller Deployment on {{ cclm_cluster_name }}
+  kubernetes.core.k8s_info:
+    host: "{{ cclm_k8s_host }}"
+    api_key: "{{ cclm_k8s_token }}"
+    validate_certs: "{{ cclm_k8s_validate_certs }}"
+    api_version: apps/v1
+    kind: Deployment
+    name: forklift-controller
+    namespace: "{{ cclm_forklift_namespace }}"
+  register: cclm_forklift_deploy
+  retries: "{{ cclm_forklift_ready_retries }}"
+  delay: "{{ cclm_forklift_ready_delay }}"
+  until: >-
+    cclm_forklift_deploy.resources | default([]) | length > 0
+    and (
+      cclm_forklift_deploy.resources[0].status.readyReplicas | default(0) | int
+      >= (cclm_forklift_deploy.resources[0].spec.replicas | default(1) | int)
+    )
