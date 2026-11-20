@@ -6,7 +6,7 @@ destination SNO on KubeVirt).
 ## Roles (order matters)
 
 1. `troshka_workload_cclm_operators` — OLM subscriptions
-2. `troshka_workload_cclm_platform_addons` — ACM MCH, RHACS, KubeDescheduler, AAP CRs (source)
+2. `troshka_workload_cclm_platform_addons` — ACM/RHACS/AAP CRs (source); PSI MachineConfigs + KubeDescheduler (source + destination)
 3. `troshka_workload_cclm_network` — migration NAD, NNCPs, MetalLB, external ODF
 4. `troshka_workload_cclm_hco` — decentralized live migration
 5. `troshka_workload_cclm_forklift` — Submariner + MTV maps

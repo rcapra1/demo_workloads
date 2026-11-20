@@ -68,6 +68,13 @@ cclm_descheduler_profile_customizations:
   devEnableEvictionsInBackground: true
   devEnableSoftTainter: true
   namespaces: {}
+# PSI via MachineConfig (psi=1). Include master for SNO/compact (dest); worker
+# for multi-node source. Node reboot required — allow ~45m per pool.
+cclm_descheduler_psi_mcp_roles:
+  - master
+  - worker
+cclm_descheduler_psi_mcp_retries: 90
+cclm_descheduler_psi_mcp_delay: 30
 
 # --- Ansible Automation Platform ---
 cclm_aap_namespace: aap

@@ -2,10 +2,14 @@
 
 Applies day-2 operand configuration (mirrored from the Troshka source cluster) for:
 
-* Advanced Cluster Management — `MultiClusterHub`
-* Advanced Cluster Security — `Central` + `SecuredCluster`
-* Kube Descheduler — `KubeDescheduler` on each cluster in `cclm_target_clusters`
-* Ansible Automation Platform — `AnsibleAutomationPlatform`
+* Advanced Cluster Management — `MultiClusterHub` (source)
+* Advanced Cluster Security — `Central` + `SecuredCluster` (source)
+* Kube Descheduler prerequisites + operand on each cluster in `cclm_target_clusters`:
+** `MachineConfig` `99-openshift-machineconfig-{master,worker}-psi-karg` (`psi=1`)
+** wait for MachineConfigPools `Updated`
+** `KubeDescheduler` with `KubeVirtRelieveAndMigrate`
+* Ansible Automation Platform — `AnsibleAutomationPlatform` (source)
 
-Runs on the **source** cluster only (after `troshka_workload_cclm_operators`).
+ACM / ACS / AAP run on the **source** cluster only (after `troshka_workload_cclm_operators`).
+PSI + descheduler run on **source and destination**.
 ACS PVC storage class defaults to `cclm_odf_storage_class` (external Ceph RBD).

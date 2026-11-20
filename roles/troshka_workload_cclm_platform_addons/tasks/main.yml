@@ -12,6 +12,14 @@
 - name: Configure Advanced Cluster Security Central and SecuredCluster
   ansible.builtin.include_tasks: configure_acs.yml
 
+# PSI kernel arg must land before KubeDescheduler with KubeVirtRelieveAndMigrate.
+- name: Enable PSI metrics on each cluster
+  ansible.builtin.include_tasks: configure_descheduler_psi.yml
+  loop: "{{ cclm_target_clusters }}"
+  loop_control:
+    loop_var: cclm_cluster_name
+    label: "{{ cclm_cluster_name }}"
+
 # Descheduler belongs on every cluster that runs VMs (source + destination).
 - name: Configure KubeDescheduler on each cluster
   ansible.builtin.include_tasks: configure_descheduler.yml
