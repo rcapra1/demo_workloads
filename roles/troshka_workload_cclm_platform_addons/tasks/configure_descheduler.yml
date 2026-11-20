@@ -4,7 +4,7 @@
     name: troshka_workload_cclm_common
     tasks_from: set_cluster_context.yml
 
-- name: Ensure KubeDescheduler {{ cclm_descheduler_namespace }}/{{ cclm_descheduler_name }} on {{ cclm_cluster_name }}
+- name: Ensure KubeDescheduler {{ cclm_cluster_name ~ '/' ~ cclm_descheduler_namespace ~ '/' ~ cclm_descheduler_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"

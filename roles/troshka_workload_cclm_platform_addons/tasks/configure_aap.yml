@@ -14,7 +14,7 @@
 
 # Parent CR only — operator creates AutomationController / EDA children.
 # Do not stamp live controller secrets or cluster-specific public_base_url.
-- name: Ensure AnsibleAutomationPlatform {{ cclm_aap_namespace }}/{{ cclm_aap_name }}
+- name: Ensure AnsibleAutomationPlatform {{ cclm_aap_namespace ~ '/' ~ cclm_aap_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"

@@ -12,7 +12,7 @@
       metadata:
         name: "{{ cclm_mch_namespace }}"
 
-- name: Ensure MultiClusterHub {{ cclm_mch_namespace }}/{{ cclm_mch_name }}
+- name: Ensure MultiClusterHub {{ cclm_mch_namespace ~ '/' ~ cclm_mch_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"

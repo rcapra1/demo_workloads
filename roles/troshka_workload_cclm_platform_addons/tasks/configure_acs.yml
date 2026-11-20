@@ -13,7 +13,7 @@
       metadata:
         name: "{{ cclm_acs_namespace }}"
 
-- name: Ensure ACS Central {{ cclm_acs_namespace }}/{{ cclm_acs_central_name }}
+- name: Ensure ACS Central {{ cclm_acs_namespace ~ '/' ~ cclm_acs_central_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
@@ -110,7 +110,7 @@
               replicas: 1
           scannerComponent: Enabled
 
-- name: Ensure ACS SecuredCluster {{ cclm_acs_namespace }}/{{ cclm_acs_secured_cluster_name }}
+- name: Ensure ACS SecuredCluster {{ cclm_acs_namespace ~ '/' ~ cclm_acs_secured_cluster_name }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"

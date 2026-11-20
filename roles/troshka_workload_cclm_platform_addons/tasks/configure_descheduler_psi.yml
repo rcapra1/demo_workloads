@@ -8,7 +8,7 @@
     name: troshka_workload_cclm_common
     tasks_from: set_cluster_context.yml
 
-- name: Ensure PSI MachineConfig for role {{ cclm_psi_mcp_role }} on {{ cclm_cluster_name }}
+- name: Ensure PSI MachineConfig {{ cclm_cluster_name ~ '/' ~ cclm_psi_mcp_role }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
@@ -33,7 +33,7 @@
 # Wait until each pool has absorbed the PSI MachineConfig and is quiescent.
 # Checking status.configuration.source avoids racing a still-Updated pool before
 # MCO starts rolling. Empty pools (SNO worker=0) still list the MC in source.
-- name: Wait for MachineConfigPool {{ cclm_psi_mcp_role }} to include PSI on {{ cclm_cluster_name }}
+- name: Wait for PSI MachineConfigPool Updated {{ cclm_cluster_name ~ '/' ~ cclm_psi_mcp_role }}
   kubernetes.core.k8s_info:
     host: "{{ cclm_k8s_host }}"
     api_key: "{{ cclm_k8s_token }}"
