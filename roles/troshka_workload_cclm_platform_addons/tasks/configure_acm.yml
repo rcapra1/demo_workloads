@@ -1,4 +1,5 @@
 ---
+# Golden: files/golden/multiclusterhub.yaml (Troshka 9aff0579 source).
 - name: Ensure open-cluster-management namespace
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
@@ -23,6 +24,7 @@
       metadata:
         name: "{{ cclm_mch_name }}"
         namespace: "{{ cclm_mch_namespace }}"
+        annotations: "{{ cclm_mch_annotations }}"
       spec:
         availabilityConfig: "{{ cclm_mch_availability_config }}"
         localClusterName: "{{ cclm_mch_local_cluster_name }}"

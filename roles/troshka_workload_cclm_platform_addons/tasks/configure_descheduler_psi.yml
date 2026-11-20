@@ -21,6 +21,7 @@
         name: "99-openshift-machineconfig-{{ cclm_psi_mcp_role }}-psi-karg"
         labels:
           machineconfiguration.openshift.io/role: "{{ cclm_psi_mcp_role }}"
+          platform.kubevirt.io/managed-by: virt-platform-autopilot
       spec:
         kernelArguments:
           - psi=1

@@ -1,4 +1,5 @@
 ---
+# Golden: files/golden/ansibleautomationplatform.yaml (Troshka 9aff0579 source).
 - name: Ensure AAP namespace {{ cclm_aap_namespace }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"

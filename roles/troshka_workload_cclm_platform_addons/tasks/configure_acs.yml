@@ -1,4 +1,6 @@
 ---
+# Golden: files/golden/central.yaml + securedcluster.yaml (Troshka 9aff0579 source).
+# storageClassName overridden to cclm_acs_storage_class (external RBD on ocp-cclm).
 - name: Ensure ACS namespace {{ cclm_acs_namespace }}
   kubernetes.core.k8s:
     host: "{{ cclm_k8s_host }}"
